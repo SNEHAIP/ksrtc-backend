@@ -64,7 +64,9 @@ app.post("/signup", async(req,res)=>{
         ).catch()
     })
 
-    app.post("/viewuser",(req,res)=>{
+ 
+
+    app.post("/view",(req,res)=>{
         let token=req.headers["token"]
         jsonwebtoken.verify(token,"register-app",(error,decoded)=>{
         if (error) {
@@ -83,8 +85,6 @@ app.post("/signup", async(req,res)=>{
         }
     })
     })
-
-
 
 
 
