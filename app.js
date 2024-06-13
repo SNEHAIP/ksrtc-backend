@@ -2,6 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors =require("cors")
 const bcrypt = require("bcryptjs")
+const jsonwebtoken =require("jsonwebtoken")
 
 
 
@@ -42,8 +43,16 @@ app.post("/signup", async(req,res)=>{
                     console.log(dbpassword)
                     bcrypt.compare(input.password,dbpassword,(error,isMatch)=>{
                      if (isMatch) {
-                        res.json({"status":"success","userId":response[0]._id})
-                    
+
+                        jsonwebtoken.sign({email:input.email},"register-app",{expiresIn:"1d"},(error,token)=>{
+                            if (error) {
+                                res.json({"status":"unable"})
+                                
+                            } else {
+                                res.json({"status":"success","userid" : response[0]._id,"token":token})
+                                
+                            }
+                        })
                     
                 } else {
                     res.json({"status":"incorrect"})
@@ -54,6 +63,30 @@ app.post("/signup", async(req,res)=>{
                 }
         ).catch()
     })
+
+    app.post("/viewuser",(req,res)=>{
+        let token=req.headers["token"]
+        jsonwebtoken.verify(token,"register-app",(error,decoded)=>{
+        if (error) {
+            res.json ({"status":"unauthorised access"})
+            
+        } else {
+            if(decoded)
+                {
+                    registermodel.find().then(
+                        (response)=>{
+                            res.json(response)
+                        }
+                    ).catch()
+                }
+            
+        }
+    })
+    })
+
+
+
+
 
 
 
