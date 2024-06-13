@@ -33,6 +33,30 @@ app.post("/signup", async(req,res)=>{
     res.send({"status":"success"})
     })
 
+    app.post("/signin",(req,res)=>{
+        let input =req.body
+        registermodel.find({"email":req.body.email}).then(
+            (response)=>{
+                if (response.length>0) {
+                    let dbpassword=response[0].password
+                    console.log(dbpassword)
+                    bcrypt.compare(input.password,dbpassword,(error,isMatch)=>{
+                     if (isMatch) {
+                        res.json({"status":"success","userId":response[0]._id})
+                    
+                    
+                } else {
+                    res.json({"status":"incorrect"})
+                    
+                }
+            })
+        }
+                }
+        ).catch()
+    })
+
+
+
 
     app.listen(8080,()=>{
         console.log("server started")
