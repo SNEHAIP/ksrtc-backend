@@ -7,6 +7,8 @@ const jsonwebtoken =require("jsonwebtoken")
 
 
 const{registermodel} =require("./models/register")
+const{busmodel} =require("./models/bus")
+
 
 
 const app = express()
@@ -85,6 +87,62 @@ app.post("/signup", async(req,res)=>{
         }
     })
     })
+
+
+
+    app.post("/add",(req,res)=>{
+        let input =req.body
+        let ksrtc = new busmodel(input)
+        ksrtc.save()
+        res.json({"status":"success"})
+    })
+
+app.post("/viewbus",(req,res)=>{
+    busmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+})
+
+
+
+app.post("/search",(req,res)=>{
+    let input = req.body
+    busmodel.find(input).then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    ).finally()
+})
+
+
+
+
+
+app.post("/delete",(req,res)=>{
+    let input =req.body
+    busmodel.findByIdAndDelete(input._id).then(
+        (response)=>{
+            res.json({"status":"success"})
+        }
+    ).catch(
+        (error)=>{
+            res.json({error})
+        }
+    )
+
+    
+})
+
 
 
 
